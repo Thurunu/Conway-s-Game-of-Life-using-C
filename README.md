@@ -98,9 +98,7 @@ To run the executable:
 
 ---
 
-## License
 
-This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
