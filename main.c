@@ -5,10 +5,10 @@
 #include <string.h>
 
 // Define grid dimensions and game speed
-#define WIDTH 150
+#define WIDTH 75
 #define HEIGHT 50
 
-#define SPEED 1000 // Speed in milliseconds for the next generation
+#define SPEED 50 // Speed in milliseconds for the next generation
 
 // Define characters used for display
 #define BACKGROUND '.'
@@ -38,7 +38,7 @@ void init_grid()
     {
         for (size_t j = 0; j < WIDTH; j++)
         {
-            if (rand() % 2 == 0 && rand() % 3 == 0)
+            if (rand() % 2 == 0 )
             {
                 grid[i][j].state = ALIVE;
                 continue;
@@ -53,6 +53,12 @@ void gen_next()
 {
     // new_grid[HEIGHT][WIDTH] = {0};
     Cell new_grid[HEIGHT][WIDTH] = {0};
+
+    for(size_t i = 0; i < HEIGHT; i++){
+        for(size_t j = 0; j < WIDTH; j++){
+            new_grid[i][j] = grid[i][j];
+        }
+    }
     
     // Loop through each cell in the grid
     for (size_t i = 0; i < HEIGHT; i++)
@@ -69,8 +75,8 @@ void gen_next()
                     // Skip the current cell itself
                     if (k == 0 && l == 0)
                         continue;
-                    int row = (i + k) % HEIGHT;
-                    int col = (j + l) % HEIGHT;
+                    int row = (i + k + HEIGHT) % HEIGHT;
+                    int col = (j + l + WIDTH) % WIDTH;
 
                     if (grid[row][col].state == ALIVE)
                             alive_count++;
@@ -94,6 +100,10 @@ void gen_next()
                 {
                     new_grid[i][j].state = ALIVE;
                 }
+                // else if (grid[i][j].state == ALIVE)
+                // {
+                //     new_grid[i][j].state = ALIVE;
+                // }
                 break;
 
             default:
@@ -136,12 +146,23 @@ int print_grid()
     return alive_count; // Return the total number of alive cells
 }
 
+void init_glider(size_t offset){
+    grid[offset+0][offset+1].state = ALIVE;
+    grid[offset+1][offset+2].state = ALIVE;
+    grid[offset+2][offset+0].state = ALIVE;
+    grid[offset+2][offset+1].state = ALIVE;
+    grid[offset+2][offset+2].state = ALIVE;
+
+}
+
 // Main function
 int main()
 {
     srand(time(NULL)); // Seed the random number generator
-    init_grid(); // Initialize the grid with all cells set to DEAD
-
+    init_grid(grid); // Initialize the grid with all cells set to DEAD
+    init_glider(0);
+    init_glider(3);
+    init_glider(5);
     // Set up an initial configuration of live cells (a small block of cells is made ALIVE)
     for(size_t i = 0; i < WIDTH/5; i++){
         for(size_t j = 0; j < HEIGHT/5; j++){
