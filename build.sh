@@ -7,6 +7,8 @@ else
     echo "Main file not removed"
 fi
 
-gcc cuda_main.c -lpthread -o main -Wall -Wextra -pedantic && echo "Compiled successfully" || echo "Compilation failed"
+gcc main.c -lpthread -o main -Wall -Wextra -pedantic && echo "Compiled successfully" || echo "Compilation failed"
+
+./main
 
 

@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
+#include <string.h>
 
 // Define grid dimensions and game speed
-#define WIDTH 190
+#define WIDTH 150
 #define HEIGHT 50
 
-#define SPEED 50 // Speed in milliseconds for the next generation
+#define SPEED 1000 // Speed in milliseconds for the next generation
 
 // Define characters used for display
 #define BACKGROUND '.'
-#define CELL '0'
+#define CELL 'E'
 
 // Define the possible states of a cell (DEAD or ALIVE)
 typedef enum
@@ -36,6 +38,11 @@ void init_grid()
     {
         for (size_t j = 0; j < WIDTH; j++)
         {
+            if (rand() % 2 == 0 && rand() % 3 == 0)
+            {
+                grid[i][j].state = ALIVE;
+                continue;
+            }
             grid[i][j].state = DEAD; // Initialize all cells as DEAD
         }
     }
@@ -44,6 +51,9 @@ void init_grid()
 // Function to generate the next state of the grid based on Game of Life rules
 void gen_next()
 {
+    // new_grid[HEIGHT][WIDTH] = {0};
+    Cell new_grid[HEIGHT][WIDTH] = {0};
+    
     // Loop through each cell in the grid
     for (size_t i = 0; i < HEIGHT; i++)
     {
@@ -74,7 +84,7 @@ void gen_next()
             case 0:
             case 1:
                 // Any live cell with fewer than two live neighbors dies (underpopulation)
-                grid[i][j].state = DEAD;
+                new_grid[i][j].state = DEAD;
                 break;
             case 2:
             case 3:
@@ -82,15 +92,22 @@ void gen_next()
                 // Any dead cell with exactly three live neighbors becomes a live cell (reproduction)
                 if (grid[i][j].state == DEAD && alive_count == 3)
                 {
-                    grid[i][j].state = ALIVE;
+                    new_grid[i][j].state = ALIVE;
                 }
                 break;
 
             default:
                 // Any live cell with more than three live neighbors dies (overpopulation)
-                grid[i][j].state = DEAD;
+                new_grid[i][j].state = DEAD;
                 break;
             }
+        }
+    }
+    for (size_t i = 0; i < HEIGHT; i++)
+    {
+        for (size_t j = 0; j < WIDTH; j++)
+        {
+            grid[i][j] = new_grid[i][j];
         }
     }
 }
@@ -122,6 +139,7 @@ int print_grid()
 // Main function
 int main()
 {
+    srand(time(NULL)); // Seed the random number generator
     init_grid(); // Initialize the grid with all cells set to DEAD
 
     // Set up an initial configuration of live cells (a small block of cells is made ALIVE)
