@@ -1,1 +1,4 @@
-*.exe
+game_of_life.exe
+game_of_life_sdl.exe
+gui_main_ncurses.exe
+main.exe
